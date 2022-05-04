@@ -93,6 +93,20 @@ class _MoedasPageState extends State<MoedasPage> {
           padding: const EdgeInsets.all(16),
           separatorBuilder: (_, __) => const Divider(),
           itemCount: tabela.length),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: selecionadas.isNotEmpty
+          ? FloatingActionButton.extended(
+              onPressed: () {},
+              icon: const Icon(Icons.star),
+              label: const Text(
+                'FAVORITAR',
+                style: TextStyle(
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : null,
     );
   }
 }
