@@ -1,5 +1,6 @@
 import 'package:cripto_moedas/repositories/moeda_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MoedasPage extends StatelessWidget {
   const MoedasPage({Key? key}) : super(key: key);
@@ -7,6 +8,7 @@ class MoedasPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabela = MoedaRepository.tabela;
+    NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cripto Moedas'),
@@ -26,7 +28,7 @@ class MoedasPage extends StatelessWidget {
                 child: Image.asset(tabela[moeda].icone),
                 width: 40,
               ),
-              trailing: Text(tabela[moeda].preco.toString()),
+              trailing: Text(real.format(tabela[moeda].preco)),
             );
           },
           padding: EdgeInsets.all(16),
