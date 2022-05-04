@@ -16,6 +16,9 @@ class MoedasPage extends StatelessWidget {
       body: ListView.separated(
           itemBuilder: (BuildContext context, int moeda) {
             return ListTile(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))
+              ),
               title: Text(
                 tabela[moeda].nome,
                 style: const TextStyle(
@@ -29,6 +32,8 @@ class MoedasPage extends StatelessWidget {
                 width: 40,
               ),
               trailing: Text(real.format(tabela[moeda].preco)),
+              selected: true,
+              selectedTileColor: Colors.indigo[50],
             );
           },
           padding: EdgeInsets.all(16),
