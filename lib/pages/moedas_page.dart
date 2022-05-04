@@ -35,10 +35,14 @@ class _MoedasPageState extends State<MoedasPage> {
                   color: Colors.indigo,
                 ),
               ),
-              leading: SizedBox(
-                child: Image.asset(tabela[moeda].icone),
-                width: 40,
-              ),
+              leading: selecionadas.contains(tabela[moeda])
+                  ? const CircleAvatar(
+                      child: Icon(Icons.check),
+                    )
+                  : SizedBox(
+                      child: Image.asset(tabela[moeda].icone),
+                      width: 40,
+                    ),
               trailing: Text(real.format(tabela[moeda].preco)),
               selected: selecionadas.contains(tabela[moeda]),
               selectedTileColor: Colors.indigo[50],
