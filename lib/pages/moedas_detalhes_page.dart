@@ -13,6 +13,8 @@ class MoedasDetalhesPage extends StatefulWidget {
 }
 
 class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
+  NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,16 +22,32 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
         title: Text(widget.moeda.nome),
       ),
       body: Padding(
-        padding: EdgeInsets.only(bottom: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        padding: EdgeInsets.all(24),
+        child: Column(
           children: [
-            SizedBox(
-              child: Image.asset(widget.moeda.icone),
-              width: 50,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    child: Image.asset(widget.moeda.icone),
+                    width: 50,
+                  ),
+                  Container(width: 10),
+                  Text(
+                    real.format(widget.moeda.preco),
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -1,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Container(width: 10),
           ],
         ),
       ),
