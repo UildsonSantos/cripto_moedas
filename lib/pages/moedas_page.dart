@@ -122,8 +122,8 @@ class _MoedasPageState extends State<MoedasPage> {
                       color: Colors.indigo,
                     ),
                   ),
-                  if (favoritasRepository.lista.contains(tabela[moeda]))
-                    Icon(Icons.circle, color: Colors.amber, size: 8),
+                  if (favoritasRepository.lista.any((fav) => fav.sigla == tabela[moeda].sigla))
+                    const Icon(Icons.circle, color: Colors.amber, size: 8),
                 ],
               ),
               leading: selecionadas.contains(tabela[moeda])
