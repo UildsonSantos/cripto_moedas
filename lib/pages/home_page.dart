@@ -1,3 +1,4 @@
+import 'package:cripto_moedas/pages/configuracoes_page.dart';
 import 'package:cripto_moedas/pages/favoritas_page.dart';
 import 'package:cripto_moedas/pages/moedas_page.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: PageView(
         controller: pageController,
-        children: [MoedasPage(), FavoritasPage()],
+        children: [
+          MoedasPage(),
+          FavoritasPage(),
+          const ConfiguracoesPage(),
+        ],
         onPageChanged: setPaginaAtual,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -38,6 +43,7 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Todas'),
           BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favoritas'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Conta'),
         ],
         onTap: (pagina) {
           pageController.animateToPage(
