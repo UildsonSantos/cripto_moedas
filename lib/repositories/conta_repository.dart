@@ -1,5 +1,7 @@
 import 'package:cripto_moedas/database/db.dart';
 import 'package:cripto_moedas/models/Posicao.dart';
+import 'package:cripto_moedas/models/moeda.dart';
+import 'package:cripto_moedas/repositories/moeda_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -18,6 +20,7 @@ class ContaRepository extends ChangeNotifier {
 
   _initRepository() async {
     await _getSaldo();
+    await _getCarteira();
   }
 
   _getSaldo() async {
@@ -34,5 +37,66 @@ class ContaRepository extends ChangeNotifier {
     });
     _saldo = valor;
     notifyListeners();
+  }
+
+  comprar(Moeda moeda, double valor) async {
+    db = await DB.instance.database;
+    await db.transaction((txn) async {
+      // verifica se a moeda já foi comprada
+      final posicaoMoeda = await txn
+          .query('carteira', where: 'sigla = ?', whereArgs: [moeda.sigla]);
+
+      // Se não tem a moeda em carteira
+      if (posicaoMoeda.isEmpty) {
+        await txn.insert('carteira', {
+          'sigla': moeda.sigla,
+          'moeda': moeda.nome,
+          'quantidade': (valor / moeda.preco).toString()
+        });
+      } else {
+        final atual = double.parse(posicaoMoeda.first['quantidade'].toString());
+        await txn.update(
+          'carteira',
+          {
+            'quantidade': (atual + (valor / moeda.preco)).toString(),
+          },
+          where: 'sigla = ?',
+          whereArgs: [moeda.sigla],
+        );
+      }
+
+      // Insere a compra no historico
+      await txn.insert('historico', {
+        'sigla': moeda.sigla,
+        'moeda': moeda.nome,
+        'quantidade': (valor / moeda.preco).toString(),
+        'valor': valor,
+        'tipo_operacao': 'compra',
+        'data_operacao': DateTime
+            .now()
+            .millisecondsSinceEpoch
+      });
+      // Atualiza o saldo
+      await txn.update('conta', {
+        'saldo': saldo - valor
+      });
+    });
+    await _initRepository();
+    notifyListeners();
+  }
+
+  _getCarteira() async {
+    _carteira = [];
+    List posicoes = await db.query('carteira');
+    posicoes.forEach((posicao) {
+      Moeda moeda = MoedaRepository.tabela.firstWhere((m) =>
+      m.sigla == posicao['sigla']);
+
+      _carteira.add(Posicao(
+        moeda: moeda,
+        quantidade: double.parse(posicao['quantidade']),
+      ));
+    });
+   notifyListeners();
   }
 }

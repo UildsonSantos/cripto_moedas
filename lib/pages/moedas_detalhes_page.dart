@@ -1,7 +1,9 @@
 import 'package:cripto_moedas/models/moeda.dart';
+import 'package:cripto_moedas/repositories/conta_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MoedasDetalhesPage extends StatefulWidget {
   Moeda moeda;
@@ -17,11 +19,12 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
   final _form = GlobalKey<FormState>();
   final _valor = TextEditingController();
   double quantidade = 0;
+  late ContaRepository conta;
 
-  comprar() {
+  comprar() async {
     if (_form.currentState!.validate()) {
       // Salvar a compra
-
+      await conta.comprar(widget.moeda, double.parse(_valor.text));
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -32,12 +35,13 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
 
   @override
   Widget build(BuildContext context) {
+    conta = Provider.of<ContaRepository>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.moeda.nome),
       ),
       body: Padding(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             Padding(
@@ -83,7 +87,7 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
                     ),
                   )
                 : Container(
-                    margin: EdgeInsets.only(bottom: 24),
+                    margin: const EdgeInsets.only(bottom: 24),
                   ),
             Form(
               key: _form,
@@ -106,6 +110,8 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
                     return 'Informe o valor da compra';
                   } else if (double.parse(value) < 50) {
                     return 'Compra mínima é R\$ 50,00';
+                  } else if (double.parse(value) > conta.saldo) {
+                    return 'Compra máxima é R\$ ${conta.saldo}';
                   }
                   return null;
                 },
@@ -120,7 +126,7 @@ class _MoedasDetalhesPageState extends State<MoedasDetalhesPage> {
             ),
             Container(
               alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(top: 24),
+              margin: const EdgeInsets.only(top: 24),
               child: ElevatedButton(
                 onPressed: comprar,
                 child: Row(
